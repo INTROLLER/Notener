@@ -8,7 +8,6 @@ window.title("Notener")
 start_width = 650
 window.geometry(f"{start_width}x400")
 amount_of_notes = 0
-amount_of_elements = 0
 
 notespath = 'Notes\\'
 
@@ -20,8 +19,9 @@ if not isExist:
    print("Successfully created notes folder!")
 
 
-
 file_data = {}
+
+#store all existing/created widgets
 widgets = []
 
 
@@ -47,9 +47,7 @@ for filename, content in file_data.items():
 #load all notes at start
 def load():
     global amount_of_notes
-    global amount_of_elements
-    global NewNoteTitle
-    global NewNoteDescription
+    global NewNoteFrame
 
     for file_name_without_extension, content in file_data.items():
         if amount_of_notes <= 3:
@@ -78,16 +76,12 @@ def load():
         widgets.append(NewNoteFrame)
 
         amount_of_notes += 1
-        amount_of_elements += 1
 
 load()
 
 #commands
 def save_new_note1():
     global amount_of_notes
-    global amount_of_elements
-    global NewNoteTitle
-    global NewNoteDescription
     global NewNoteFrame
 
     NewTitle = TitleEntry.get()
@@ -128,8 +122,6 @@ def save_new_note1():
 
         widgets.append(NewNoteFrame)
 
-        amount_of_elements += 1
-
 def open_creating_settings():
     global amount_of_notes
     global TitleEntry
@@ -167,12 +159,10 @@ Button2 = CTkButton(window, text="Delete All", command=delete_all_notes, fg_colo
 Button2.place(relx=0.18, rely=0.6, relwidth=0.3, anchor="center")
 Label1 = CTkLabel(window, text="Press")
 Label2 = CTkLabel(window, text="Press")
-Entry1 = CTkEntry(window)
 
 #place entities
 Button1.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
 Button2.place(relx=0.18, rely=0.55, relwidth=0.3, relheight= 0.08,  anchor="center")
-#Entry1.place(relx=0.15, rely=0.5, relwidth=0.3, relheight= 0.08, anchor="center")
 
 #run
 window.mainloop()
