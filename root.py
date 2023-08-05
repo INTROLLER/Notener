@@ -129,9 +129,9 @@ def open_creating_settings():
     # Iterate directory
     amount_of_notes = sum(1 for item in os.listdir(notespath) if os.path.isfile(os.path.join(notespath, item)))
     New_Name = f"TitleEntry{str(amount_of_notes + 1)}"
-    TitleEntry = CTkEntry(window,  placeholder_text="Name your note", corner_radius=15)
+    TitleEntry = CTkEntry(window,  placeholder_text="Title your note", corner_radius=15)
     TitleEntry.place(relx=0.18, rely=0.35, relwidth=0.3, relheight= 0.08, anchor="center")
-    ContentEntry = CTkEntry(window,  placeholder_text="Enter the note content", corner_radius=15)
+    ContentEntry = CTkEntry(window,  placeholder_text="Enter desired note content", corner_radius=15)
     ContentEntry.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
 
     Button1.configure(text="Save Note", command=save_new_note1, fg_color="#00ff6c", hover_color="#21a95a", text_color="#003014")
@@ -154,8 +154,8 @@ def delete_all_notes():
 
 
 #entitites
-Button1 = CTkButton(window, text="Create New Note", command=open_creating_settings, fg_color="#3ab1ff", hover_color="#006fb8", text_color="#00194e", font=("Outfit", 20, "bold"), corner_radius=15)
-Button2 = CTkButton(window, text="Delete All", command=delete_all_notes, fg_color="#ff1f1f", hover_color="#bf0000", text_color="#370c0c", font=("Outfit", 20, "bold"), corner_radius=15)
+Button1 = CTkButton(window, text="Create New Note", command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e", font=("Outfit", 20, "bold"), corner_radius=15)
+Button2 = CTkButton(window, text="Delete All", command=delete_all_notes, fg_color="#ff3c3c", hover_color="#ff0f0f", text_color="#150505", font=("Outfit", 20, "bold"), corner_radius=15)
 Button2.place(relx=0.18, rely=0.6, relwidth=0.3, anchor="center")
 Label1 = CTkLabel(window, text="Press")
 Label2 = CTkLabel(window, text="Press")
