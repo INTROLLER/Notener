@@ -9,7 +9,17 @@ start_width = 650
 window.geometry(f"{start_width}x400")
 amount_of_notes = 0
 
-notespath = 'D:\\Coding Projects\\Notener\\Notes\\'
+notespath = 'Notes\\'
+
+# Check whether the specified path exists or not
+isExist = os.path.exists(notespath)
+if not isExist:
+   # Create a new directory because it does not exist
+   os.makedirs(notespath)
+   print("Successfully created notes folder!")
+
+
+
 file_data = {}
 
 # Iterate over all files in the folder
@@ -44,10 +54,17 @@ for file_name_without_extension, content in file_data.items():
     NewDescription = content
     NewNoteFrame = CTkFrame(window)
     NewNoteFrame.place(relx=x_value, rely=y_value, relwidth=0.29, relheight= 0.23, anchor="center")
+
+    NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, height=75, activate_scrollbars=False, wrap="word")
+    NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
+    NewNoteDescription.insert("0.0", f"{NewDescription}")
+    NewNoteDescription.configure(state="disabled")
+
     NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 20, "bold"))
     NewNoteTitle.place(relx=0.5, rely=0.15, anchor="center")
-    NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription)
-    NewNoteDescription.place(relx=0.5, rely=0.43, anchor="center")
+    
+    NewNoteDescScrollBar = CTkScrollbar(NewNoteFrame, height=0.01)
+    NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
     amount_of_notes += 1
 
 #commands
@@ -69,11 +86,19 @@ def save_new_note1():
         
         NewNoteFrame = CTkFrame(window)
         NewNoteFrame.place(relx=x_value, rely=y_value, relwidth=0.29, relheight= 0.23, anchor="center")
+
+        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, height=75, activate_scrollbars=False, wrap="word")
+        NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
+        NewNoteDescription.insert("0.0", f"{NewDescription}")
+        NewNoteDescription.configure(state="disabled", justify=CENTER)
+
         NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 20, "bold"))
         NewNoteTitle.place(relx=0.5, rely=0.15, anchor="center")
-        NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription)
-        NewNoteDescription.place(relx=0.5, rely=0.43, anchor="center")
-        with open(f'D:\\Coding Projects\\Notener\\Notes\\{NewTitle}.txt', "w") as my_file:
+        
+        NewNoteDescScrollBar = CTkScrollbar(NewNoteFrame, height=0.01)
+        NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
+
+        with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
         ContentEntry.destroy()
         TitleEntry.destroy()
