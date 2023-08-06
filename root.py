@@ -5,8 +5,7 @@ from random import *
 #the window
 window = CTk()
 window.title("Notener")
-start_width = 650
-window.geometry(f"{start_width}x400")
+window.geometry("700x450")
 amount_of_notes = 0
 
 notespath = 'Notes\\'
@@ -48,21 +47,20 @@ for filename, content in file_data.items():
 def load():
     global amount_of_notes
     global NewNoteFrame
+    global WidgetFrame
+    row_state = 0
+
+    WidgetFrame = CTkScrollableFrame(window)
+    WidgetFrame.place(relx=0.675, rely=0.5, anchor="center", relwidth=0.625, relheight=0.95)
 
     for file_name_without_extension, content in file_data.items():
-        if amount_of_notes <= 3:
-            y_value = 0.1412 + (0.24 * amount_of_notes)
-            x_value = 0.51
-        elif amount_of_notes >= 4:
-            y_value = 0.1412 + (0.24 * amount_of_notes) - 0.96
-            x_value = 0.83
         
         NewTitle = file_name_without_extension
         NewDescription = content
-        NewNoteFrame = CTkFrame(window)
-        NewNoteFrame.place(relx=x_value, rely=y_value, relwidth=0.29, relheight= 0.23, anchor="center")
+        NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
+        NewNoteFrame.grid(row=row_state, column=1, pady=3)
 
-        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, height=75, activate_scrollbars=False, wrap="word")
+        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, width=410, height=75, activate_scrollbars=False, wrap="word")
         NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
         NewNoteDescription.insert("0.0", f"{NewDescription}")
         NewNoteDescription.configure(state="disabled")
@@ -74,6 +72,8 @@ def load():
         NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
 
         widgets.append(NewNoteFrame)
+
+        row_state = row_state + 1
 
         amount_of_notes += 1
 
@@ -91,17 +91,10 @@ def save_new_note1():
     elif NewDescription == "":
         print("Enter stuff")
     else:
-        if amount_of_notes <= 3:
-            y_value = 0.1412 + (0.24 * amount_of_notes)
-            x_value = 0.51
-        elif amount_of_notes >= 4:
-            y_value = 0.1412 + (0.24 * amount_of_notes) - 0.96
-            x_value = 0.83
-        
-        NewNoteFrame = CTkFrame(window)
-        NewNoteFrame.place(relx=x_value, rely=y_value, relwidth=0.29, relheight= 0.23, anchor="center")
+        NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
+        NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
 
-        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, height=75, activate_scrollbars=False, wrap="word")
+        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, width=410, height=75, activate_scrollbars=False, wrap="word")
         NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
         NewNoteDescription.insert("0.0", f"{NewDescription}")
         NewNoteDescription.configure(state="disabled")
@@ -159,6 +152,11 @@ Button2 = CTkButton(window, text="Delete All", command=delete_all_notes, fg_colo
 Button2.place(relx=0.18, rely=0.6, relwidth=0.3, anchor="center")
 Label1 = CTkLabel(window, text="Press")
 Label2 = CTkLabel(window, text="Press")
+
+#TestLabel = CTkFrame(WidgetFrame, fg_color="#ffffff", height=10)
+#TestLabel.grid(row=0, column=0)
+#TestLabel2 = CTkFrame(WidgetFrame, fg_color="#ffffff", height=10)
+#TestLabel2.grid(row=1, column=0)
 
 #place entities
 Button1.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
