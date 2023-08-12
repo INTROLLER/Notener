@@ -15,7 +15,7 @@ isExist = os.path.exists(notespath)
 if not isExist:
    # Create a new directory because it does not exist
    os.makedirs(notespath)
-   print("Successfully created notes folder!")
+   print("Successfully created missing notes folder!")
 
 
 file_data = {}
@@ -68,7 +68,7 @@ def load():
         NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
         NewNoteDescription.grid(row=1, column=0, pady=3)
 
-        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), text_color="#e1ff5c", wraplength=400, justify="center")
+        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), wraplength=400, justify="center")
         NewNoteTitle.grid(row=0, column=0, pady=5)
 
         widgets.append(NewNoteFrame)
@@ -102,7 +102,7 @@ def save_new_note1():
         NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
         NewNoteDescription.grid(row=1, column=0, pady=3)
 
-        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), text_color="#e1ff5c", wraplength=400, justify="center")
+        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), wraplength=400, justify="center")
         NewNoteTitle.grid(row=0, column=0, pady=5)
 
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
