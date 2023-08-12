@@ -1,3 +1,5 @@
+#Notener 1.1
+
 from customtkinter import *
 import os
 from random import *
@@ -23,6 +25,7 @@ file_data = {}
 
 #store all existing/created widgets
 widgets = []
+titles = []
 
 
 # Iterate over all files in the folder
@@ -73,6 +76,7 @@ def load():
         NewNoteTitle.grid(row=0, column=0, pady=5)
 
         widgets.append(NewNoteFrame)
+        titles.append(NewNoteTitle)
 
         row_state = row_state + 1
 
@@ -110,9 +114,9 @@ def save_new_note1():
             my_file.write(NewDescription)
         ContentEntry.destroy()
         TitleEntry.destroy()
-        Button1.configure(text="Create New Note", command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e")
-        Button1.place(relx=0.18, rely=0.45)
-        Button2.place(relx=0.18, rely=0.55)
+        CreateNoteButton.configure(text="Create New Note", command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e")
+        CreateNoteButton.place(relx=0.18, rely=0.45)
+        DeleteAllButton.place(relx=0.18, rely=0.55)
 
         widgets.append(NewNoteFrame)
 
@@ -128,9 +132,9 @@ def open_creating_settings():
     ContentEntry = CTkEntry(window,  placeholder_text="Enter desired note content", corner_radius=15)
     ContentEntry.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
 
-    Button1.configure(text="Save Note", command=save_new_note1, fg_color="#1cff5a", hover_color="#00d139", text_color="#031a0d")
-    Button1.place(relx=0.18, rely=0.57)
-    Button2.place(relx=0.18, rely=0.67)
+    CreateNoteButton.configure(text="Save Note", command=save_new_note1, fg_color="#1cff5a", hover_color="#00d139", text_color="#031a0d")
+    CreateNoteButton.place(relx=0.18, rely=0.57)
+    DeleteAllButton.place(relx=0.18, rely=0.67)
 
 def remove():
     for NewNoteFrame in widgets:
@@ -144,16 +148,34 @@ def delete_all_notes():
     amount_of_notes = 0
 
 
+def switch_appearance_mode():
+    Current_mode = ModeSwitch_var.get()
+    if Current_mode == "off":
+        set_appearance_mode("light")
+        for NewNoteTitle in titles:
+            NewNoteTitle.configure(text_color="#00716f")
+        CreateNoteButton.configure(fg_color="#00b8ee")
+
+    elif Current_mode == "on":
+        set_appearance_mode("dark")
+        for NewNoteTitle in titles:
+            NewNoteTitle.configure(text_color="#e1ff5c")
+        CreateNoteButton.configure(fg_color="#40d0ff")
+
+
 #entitites
-Button1 = CTkButton(window, text="Create New Note", command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e", font=("Outfit", 20, "bold"), corner_radius=15)
-Button2 = CTkButton(window, text="Delete All", command=delete_all_notes, fg_color="#ff3c3c", hover_color="#d60e0e", text_color="#150505", font=("Outfit", 20, "bold"), corner_radius=15)
-Button2.place(relx=0.18, rely=0.6, relwidth=0.3, anchor="center")
+CreateNoteButton = CTkButton(window, text="Create New Note", command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e", font=("Outfit", 20, "bold"), corner_radius=15)
+DeleteAllButton = CTkButton(window, text="Delete All", command=delete_all_notes, fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#150505", font=("Outfit", 20, "bold"), corner_radius=15)
 Label1 = CTkLabel(window, text="Press")
 Label2 = CTkLabel(window, text="Press")
 
+ModeSwitch_var = StringVar(value="on")
+ModeSwitch = CTkSwitch(window, text="Darkmode", command=switch_appearance_mode, variable=ModeSwitch_var, onvalue="on", offvalue="off", corner_radius=100)
+ModeSwitch.place(relx=0.1, rely=0.95, anchor="center")
+
 #place entities
-Button1.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
-Button2.place(relx=0.18, rely=0.55, relwidth=0.3, relheight= 0.08,  anchor="center")
+CreateNoteButton.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
+DeleteAllButton.place(relx=0.18, rely=0.55, relwidth=0.3, relheight= 0.08,  anchor="center")
 
 #run
 window.mainloop()
