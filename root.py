@@ -68,16 +68,8 @@ def load():
         NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
         NewNoteDescription.grid(row=1, column=0, pady=3)
 
-        #NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, width=410, height=75, activate_scrollbars=False, wrap="word")
-        #NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
-        #NewNoteDescription.insert("0.0", f"{NewDescription}")
-        #NewNoteDescription.configure(state="disabled")
-
         NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), text_color="#e1ff5c", wraplength=400, justify="center")
         NewNoteTitle.grid(row=0, column=0, pady=5)
-        
-        NewNoteDescScrollBar = CTkScrollbar(NewNoteFrame, height=0.01)
-        #NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
 
         widgets.append(NewNoteFrame)
 
@@ -99,19 +91,19 @@ def save_new_note1():
     elif NewDescription == "":
         print("Enter stuff")
     else:
-        NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
+        #NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
+        NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
         NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
 
-        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, width=410, height=75, activate_scrollbars=False, wrap="word")
-        NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
-        NewNoteDescription.insert("0.0", f"{NewDescription}")
-        NewNoteDescription.configure(state="disabled")
+        NewNoteFrame.grid_rowconfigure(0, weight=1, minsize=50)
+        NewNoteFrame.grid_rowconfigure(1, weight=1, minsize=50)
+        NewNoteFrame.grid_columnconfigure(0, weight=1, minsize=414)
 
-        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 20, "bold"))
-        NewNoteTitle.place(relx=0.5, rely=0.15, anchor="center")
-        
-        NewNoteDescScrollBar = CTkScrollbar(NewNoteFrame, height=0.01)
-        NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
+        NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
+        NewNoteDescription.grid(row=1, column=0, pady=3)
+
+        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), text_color="#e1ff5c", wraplength=400, justify="center")
+        NewNoteTitle.grid(row=0, column=0, pady=5)
 
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
@@ -138,9 +130,6 @@ def open_creating_settings():
     Button1.configure(text="Save Note", command=save_new_note1, fg_color="#1cff5a", hover_color="#00d139", text_color="#031a0d")
     Button1.place(relx=0.18, rely=0.57)
     Button2.place(relx=0.18, rely=0.67)
-    #locals() ["TitleEntry"+ str(amount_of_notes + 1)] = CTkEntry(window)
-    #int(New_Name).place(relx=0.18, rely=0.2, relwidth=0.3, relheight= 0.08, anchor="center")
-    #print(New_Name)
 
 def remove():
     for NewNoteFrame in widgets:
@@ -160,11 +149,6 @@ Button2 = CTkButton(window, text="Delete All", command=delete_all_notes, fg_colo
 Button2.place(relx=0.18, rely=0.6, relwidth=0.3, anchor="center")
 Label1 = CTkLabel(window, text="Press")
 Label2 = CTkLabel(window, text="Press")
-
-#TestLabel = CTkFrame(WidgetFrame, fg_color="#ffffff", height=10)
-#TestLabel.grid(row=0, column=0)
-#TestLabel2 = CTkFrame(WidgetFrame, fg_color="#ffffff", height=10)
-#TestLabel2.grid(row=1, column=0)
 
 #place entities
 Button1.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
