@@ -50,26 +50,34 @@ def load():
     global WidgetFrame
     row_state = 0
 
-    WidgetFrame = CTkScrollableFrame(window)
+    WidgetFrame = CTkScrollableFrame(window, fg_color="transparent")
     WidgetFrame.place(relx=0.675, rely=0.5, anchor="center", relwidth=0.625, relheight=0.95)
 
     for file_name_without_extension, content in file_data.items():
         
         NewTitle = file_name_without_extension
         NewDescription = content
-        NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
+        #NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
+        NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
         NewNoteFrame.grid(row=row_state, column=1, pady=3)
 
-        NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, width=410, height=75, activate_scrollbars=False, wrap="word")
-        NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
-        NewNoteDescription.insert("0.0", f"{NewDescription}")
-        NewNoteDescription.configure(state="disabled")
+        NewNoteFrame.grid_rowconfigure(0, weight=1, minsize=50)
+        NewNoteFrame.grid_rowconfigure(1, weight=1, minsize=50)
+        NewNoteFrame.grid_columnconfigure(0, weight=1, minsize=414)
 
-        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 20, "bold"))
-        NewNoteTitle.place(relx=0.5, rely=0.15, anchor="center")
+        NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
+        NewNoteDescription.grid(row=1, column=0, pady=3)
+
+        #NewNoteDescription = CTkTextbox(NewNoteFrame, fg_color="transparent", padx=5, pady=5, width=410, height=75, activate_scrollbars=False, wrap="word")
+        #NewNoteDescription.place(relx=0.5, rely=0.6, anchor="center")
+        #NewNoteDescription.insert("0.0", f"{NewDescription}")
+        #NewNoteDescription.configure(state="disabled")
+
+        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 25, "bold"), text_color="#e1ff5c", wraplength=400, justify="center")
+        NewNoteTitle.grid(row=0, column=0, pady=5)
         
         NewNoteDescScrollBar = CTkScrollbar(NewNoteFrame, height=0.01)
-        NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
+        #NewNoteDescription.configure(yscrollcommand=NewNoteDescScrollBar.set)
 
         widgets.append(NewNoteFrame)
 
