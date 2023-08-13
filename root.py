@@ -31,6 +31,7 @@ widgets = []
 titles = []
 ActionBackgrounds = []
 SeparateDeleteButtons = []
+SeparateRenameButtons = []
 current_file_name = []
 
 
@@ -158,6 +159,7 @@ def load():
         titles.append(NewNoteTitle)
         ActionBackgrounds.append(ActionsBackground)
         SeparateDeleteButtons.append(NewNoteDeleteButton)
+        SeparateRenameButtons.append(NewNoteRenameButton)
 
         amount_of_notes += 1
 
@@ -239,6 +241,7 @@ def save_new_note1():
         titles.append(NewNoteTitle)
         ActionBackgrounds.append(ActionsBackground)
         SeparateDeleteButtons.append(NewNoteDeleteButton)
+        SeparateRenameButtons.append(NewNoteRenameButton)
 
 
 def open_creating_settings():
@@ -278,6 +281,8 @@ def switch_appearance_mode():
             ActionsBackground.configure(fg_color="#c5c5c5")
         for NewNoteDeleteButton in SeparateDeleteButtons:
             NewNoteDeleteButton.configure(bg_color="#c5c5c5")
+        for NewNoteRenameButton in SeparateRenameButtons:
+            NewNoteRenameButton.configure(bg_color="#c5c5c5")
 
     elif Current_mode == "on":
         set_appearance_mode("dark")
@@ -287,6 +292,8 @@ def switch_appearance_mode():
             ActionsBackground.configure(fg_color="#3f3f3f")
         for NewNoteDeleteButton in SeparateDeleteButtons:
             NewNoteDeleteButton.configure(bg_color="#3f3f3f")
+        for NewNoteRenameButton in SeparateRenameButtons:
+            NewNoteRenameButton.configure(bg_color="#3f3f3f")
 
 def delete_note(NewNoteFrame, NewNoteTitle):
     NewNoteFrame.destroy()
