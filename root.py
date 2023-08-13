@@ -1,4 +1,4 @@
-#Notener 1.4
+#Notener 1.5
 
 from customtkinter import *
 import os
@@ -31,6 +31,7 @@ widgets = []
 titles = []
 ActionBackgrounds = []
 SeparateDeleteButtons = []
+current_file_name = []
 
 
 
@@ -57,10 +58,15 @@ def load_icons():
     global resized_delete_icon
     global resized_create_icon
     global resized_save_icon
+    global resized_rename_icon
+    global resized_rewrite_icon
 
     delete_icon = Image.open("delete icon.png")
     create_icon = Image.open("create icon.png")
     save_icon = Image.open("save icon.png")
+    rename_icon = Image.open("rename icon.png")
+    rewrite_icon = Image.open("rewrite icon.png")
+
     new_size = (22, 22)
     resized_delete_icon = delete_icon.resize(new_size, Image.Resampling.LANCZOS)
     resized_delete_icon = ImageTk.PhotoImage(resized_delete_icon)
@@ -70,6 +76,12 @@ def load_icons():
 
     resized_save_icon = save_icon.resize(new_size, Image.Resampling.LANCZOS)
     resized_save_icon = ImageTk.PhotoImage(resized_save_icon)
+
+    resized_rename_icon = rename_icon.resize(new_size, Image.Resampling.LANCZOS)
+    resized_rename_icon = ImageTk.PhotoImage(resized_rename_icon)
+
+    resized_rewrite_icon = rewrite_icon.resize(new_size, Image.Resampling.LANCZOS)
+    resized_rewrite_icon = ImageTk.PhotoImage(resized_rewrite_icon)
 
 #load all notes at start
 def load():
@@ -125,6 +137,20 @@ def load():
                                         height=10,
                                         width=10)
         NewNoteDeleteButton.grid(row=2, column=2, padx=8)
+
+        NewNoteRenameButton = CTkButton(NewNoteFrame,
+                                        text="",
+                                        image=resized_rename_icon,
+                                        command=lambda t=NewNoteTitle: rename_note(t),
+                                        fg_color="#a1f152",
+                                        hover_color="#78d51b",
+                                        text_color="#00194e",
+                                        bg_color="#3f3f3f",
+                                        border_width=0,
+                                        corner_radius=150,
+                                        height=10,
+                                        width=10)
+        NewNoteRenameButton.grid(row=2, column=3, padx=8)
 
         widgets.append(NewNoteFrame)
         titles.append(NewNoteTitle)
@@ -186,6 +212,20 @@ def save_new_note1():
                                         height=10,
                                         width=10)
         NewNoteDeleteButton.grid(row=2, column=2, padx=8)
+
+        NewNoteRenameButton = CTkButton(NewNoteFrame,
+                                        text="",
+                                        image=resized_rename_icon,
+                                        command=lambda t=NewNoteTitle: rename_note(t),
+                                        fg_color="#a1f152",
+                                        hover_color="#78d51b",
+                                        text_color="#00194e",
+                                        bg_color="#3f3f3f",
+                                        border_width=0,
+                                        corner_radius=150,
+                                        height=10,
+                                        width=10)
+        NewNoteRenameButton.grid(row=2, column=3, padx=8)
 
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
@@ -253,6 +293,15 @@ def delete_note(NewNoteFrame, NewNoteTitle):
     note_name = NewNoteTitle.cget("text")
     file_to_remove = ('Notes\\' + note_name + '.txt')
     os.remove(file_to_remove)
+
+
+def rename_note(file_name):
+    dialog = CTkInputDialog(text="Enter a New Name For The File:", title="Rename File")
+    new_name = dialog.get_input()
+    dialog.destroy()
+    if new_name:
+        os.rename((notespath + file_name.cget("text") + ".txt"), (notespath + new_name + ".txt"))
+        file_name.configure(text=new_name)
 
 load_icons()
 load()
