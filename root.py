@@ -26,9 +26,12 @@ if not DoesExist:
 
 file_data = {}
 
-#store all existing/created widgets
+#store all existing/created stuff
 widgets = []
 titles = []
+ActionBackgrounds = []
+SeparateDeleteButtons = []
+
 
 
 # Iterate over all files in the folder
@@ -61,22 +64,18 @@ def load_icons():
     new_size = (22, 22)
     resized_delete_icon = delete_icon.resize(new_size, Image.Resampling.LANCZOS)
     resized_delete_icon = ImageTk.PhotoImage(resized_delete_icon)
-    #resized_delete_icons.append(resized_delete_icon)
 
     resized_create_icon = create_icon.resize(new_size, Image.Resampling.LANCZOS)
     resized_create_icon = ImageTk.PhotoImage(resized_create_icon)
-    #resized_create_icons.append(resized_create_icon)
 
     resized_save_icon = save_icon.resize(new_size, Image.Resampling.LANCZOS)
     resized_save_icon = ImageTk.PhotoImage(resized_save_icon)
-    #resized_save_icons.append(resized_save_icon)
 
 #load all notes at start
 def load():
     global amount_of_notes
     global NewNoteFrame
     global WidgetFrame
-    row_state = 0
 
     WidgetFrame = CTkScrollableFrame(window, fg_color="transparent")
     WidgetFrame.place(relx=0.675, rely=0.5, anchor="center", relwidth=0.625, relheight=0.95)
@@ -85,28 +84,54 @@ def load():
         
         NewTitle = file_name_without_extension
         NewDescription = content
+
+
         #NewNoteFrame = CTkFrame(WidgetFrame, fg_color="#252525", height=100, width=410)
         NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
-        NewNoteFrame.grid(row=row_state, column=1, pady=3)
+        NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
 
-        NewNoteFrame.grid_rowconfigure(0, weight=1, minsize=50)
-        NewNoteFrame.grid_rowconfigure(1, weight=1, minsize=50)
-        NewNoteFrame.grid_columnconfigure(0, weight=1, minsize=360)
-        NewNoteFrame.grid_columnconfigure(1, weight=1, minsize=50)
+        NewNoteFrame.grid_rowconfigure((0, 1), weight=1, minsize=50)
+        NewNoteFrame.grid_rowconfigure(2, weight=1, minsize=50)
+        NewNoteFrame.grid_columnconfigure((0, 1, 2, 3, 4), weight=1, minsize=82)
 
-        NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
-        NewNoteDescription.grid(row=1, column=0, pady=3)
+        NewNoteDescription = CTkLabel(NewNoteFrame,
+                                      text=NewDescription,
+                                      font=("Outfit", 15, "bold"),
+                                      wraplength=400,
+                                      justify="center")
+        NewNoteDescription.grid(row=1, column=0, pady=3, columnspan=5)
 
-        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 21, "bold"), text_color="#e1ff5c", wraplength=348, justify="center")
-        NewNoteTitle.grid(row=0, column=0, pady=5, padx=7)
+        NewNoteTitle = CTkLabel(NewNoteFrame,
+                                text=NewTitle,
+                                font=("Outfit", 21, "bold"),
+                                text_color="#e1ff5c",
+                                wraplength=400,
+                                justify="center")
+        NewNoteTitle.grid(row=0, column=0, pady=5, padx=7, columnspan=5)
 
-        NewNoteDeleteButton = CTkButton(NewNoteFrame, text="", image=resized_delete_icon, command=lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t), fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#00194e", corner_radius=150, height=10, width=10)
-        NewNoteDeleteButton.grid(row=0, column=1, pady=3, padx=8)
+        ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20)
+        ActionsBackground.grid(row=2, column=0, columnspan=5, sticky="nesw")
+
+        NewNoteDeleteButton = CTkButton(NewNoteFrame,
+                                        text="",
+                                        image=resized_delete_icon,
+                                        command=lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t),
+                                        fg_color="#ff3c3c",
+                                        hover_color="#ec1a1a",
+                                        text_color="#00194e",
+                                        bg_color="#3f3f3f",
+                                        border_width=0,
+                                        corner_radius=150,
+                                        height=10,
+                                        width=10)
+        NewNoteDeleteButton.grid(row=2, column=2, padx=8)
 
         widgets.append(NewNoteFrame)
         titles.append(NewNoteTitle)
-
-        row_state = row_state + 1
+        widgets.append(NewNoteFrame)
+        titles.append(NewNoteTitle)
+        ActionBackgrounds.append(ActionsBackground)
+        SeparateDeleteButtons.append(NewNoteDeleteButton)
 
         amount_of_notes += 1
 
@@ -126,19 +151,41 @@ def save_new_note1():
         NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
         NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
 
-        NewNoteFrame.grid_rowconfigure(0, weight=1, minsize=50)
-        NewNoteFrame.grid_rowconfigure(1, weight=1, minsize=50)
-        NewNoteFrame.grid_columnconfigure(0, weight=1, minsize=360)
-        NewNoteFrame.grid_columnconfigure(1, weight=1, minsize=50)
+        NewNoteFrame.grid_rowconfigure((0, 1), weight=1, minsize=50)
+        NewNoteFrame.grid_rowconfigure(2, weight=1, minsize=50)
+        NewNoteFrame.grid_columnconfigure((0, 1, 2, 3, 4), weight=1, minsize=82)
 
-        NewNoteDescription = CTkLabel(NewNoteFrame, text=NewDescription, font=("Outfit", 15, "bold"), wraplength=400, justify="center")
-        NewNoteDescription.grid(row=1, column=0, pady=3)
+        NewNoteDescription = CTkLabel(NewNoteFrame,
+                                      text=NewDescription,
+                                      font=("Outfit", 15, "bold"),
+                                      wraplength=400,
+                                      justify="center")
+        NewNoteDescription.grid(row=1, column=0, pady=3, columnspan=5)
 
-        NewNoteTitle = CTkLabel(NewNoteFrame, text=NewTitle, font=("Outfit", 21, "bold"), text_color="#e1ff5c", wraplength=348, justify="center")
-        NewNoteTitle.grid(row=0, column=0, pady=5, padx=7)
+        NewNoteTitle = CTkLabel(NewNoteFrame,
+                                text=NewTitle,
+                                font=("Outfit", 21, "bold"),
+                                text_color="#e1ff5c",
+                                wraplength=400,
+                                justify="center")
+        NewNoteTitle.grid(row=0, column=0, pady=5, padx=7, columnspan=5)
 
-        NewNoteDeleteButton = CTkButton(NewNoteFrame, text="", image=resized_delete_icon, command=lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t), fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#00194e", corner_radius=150, height=10, width=10)
-        NewNoteDeleteButton.grid(row=0, column=1, pady=3, padx=8)
+        ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20)
+        ActionsBackground.grid(row=2, column=0, columnspan=5, sticky="nesw")
+
+        NewNoteDeleteButton = CTkButton(NewNoteFrame,
+                                        text="",
+                                        image=resized_delete_icon,
+                                        command=lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t),
+                                        fg_color="#ff3c3c",
+                                        hover_color="#ec1a1a",
+                                        text_color="#00194e",
+                                        bg_color="#3f3f3f",
+                                        border_width=0,
+                                        corner_radius=150,
+                                        height=10,
+                                        width=10)
+        NewNoteDeleteButton.grid(row=2, column=2, padx=8)
 
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
@@ -150,6 +197,9 @@ def save_new_note1():
 
         widgets.append(NewNoteFrame)
         titles.append(NewNoteTitle)
+        ActionBackgrounds.append(ActionsBackground)
+        SeparateDeleteButtons.append(NewNoteDeleteButton)
+
 
 def open_creating_settings():
     global amount_of_notes
@@ -184,11 +234,19 @@ def switch_appearance_mode():
         set_appearance_mode("light")
         for NewNoteTitle in titles:
             NewNoteTitle.configure(text_color="#00716f")
+        for ActionsBackground in ActionBackgrounds:
+            ActionsBackground.configure(fg_color="#c5c5c5")
+        for NewNoteDeleteButton in SeparateDeleteButtons:
+            NewNoteDeleteButton.configure(bg_color="#c5c5c5")
 
     elif Current_mode == "on":
         set_appearance_mode("dark")
         for NewNoteTitle in titles:
             NewNoteTitle.configure(text_color="#e1ff5c")
+        for ActionsBackground in ActionBackgrounds:
+            ActionsBackground.configure(fg_color="#3f3f3f")
+        for NewNoteDeleteButton in SeparateDeleteButtons:
+            NewNoteDeleteButton.configure(bg_color="#3f3f3f")
 
 def delete_note(NewNoteFrame, NewNoteTitle):
     NewNoteFrame.destroy()
