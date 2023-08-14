@@ -1,4 +1,4 @@
-#Notener 1.5
+#Notener 1.6
 
 from customtkinter import *
 import os
@@ -32,6 +32,7 @@ titles = []
 ActionBackgrounds = []
 SeparateDeleteButtons = []
 SeparateRenameButtons = []
+SeparateEditButtons = []
 current_file_name = []
 
 
@@ -60,13 +61,13 @@ def load_icons():
     global resized_create_icon
     global resized_save_icon
     global resized_rename_icon
-    global resized_rewrite_icon
+    global resized_edit_icon
 
     delete_icon = Image.open("delete icon.png")
     create_icon = Image.open("create icon.png")
     save_icon = Image.open("save icon.png")
     rename_icon = Image.open("rename icon.png")
-    rewrite_icon = Image.open("rewrite icon.png")
+    edit_icon = Image.open("edit icon.png")
 
     new_size = (22, 22)
     resized_delete_icon = delete_icon.resize(new_size, Image.Resampling.LANCZOS)
@@ -81,8 +82,8 @@ def load_icons():
     resized_rename_icon = rename_icon.resize(new_size, Image.Resampling.LANCZOS)
     resized_rename_icon = ImageTk.PhotoImage(resized_rename_icon)
 
-    resized_rewrite_icon = rewrite_icon.resize(new_size, Image.Resampling.LANCZOS)
-    resized_rewrite_icon = ImageTk.PhotoImage(resized_rewrite_icon)
+    resized_edit_icon = edit_icon.resize(new_size, Image.Resampling.LANCZOS)
+    resized_edit_icon = ImageTk.PhotoImage(resized_edit_icon)
 
 #load all notes at start
 def load():
@@ -153,6 +154,20 @@ def load():
                                         width=10)
         NewNoteRenameButton.grid(row=2, column=3, padx=8)
 
+        NewNoteEditButton = CTkButton(NewNoteFrame,
+                                        text="",
+                                        image=resized_edit_icon,
+                                        command=lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c),
+                                        fg_color="#59c8ff",
+                                        hover_color="#129fe5",
+                                        text_color="#00194e",
+                                        bg_color="#3f3f3f",
+                                        border_width=0,
+                                        corner_radius=150,
+                                        height=10,
+                                        width=10)
+        NewNoteEditButton.grid(row=2, column=1, padx=8)
+
         widgets.append(NewNoteFrame)
         titles.append(NewNoteTitle)
         widgets.append(NewNoteFrame)
@@ -160,6 +175,7 @@ def load():
         ActionBackgrounds.append(ActionsBackground)
         SeparateDeleteButtons.append(NewNoteDeleteButton)
         SeparateRenameButtons.append(NewNoteRenameButton)
+        SeparateEditButtons.append(NewNoteEditButton)
 
         amount_of_notes += 1
 
@@ -229,6 +245,20 @@ def save_new_note1():
                                         width=10)
         NewNoteRenameButton.grid(row=2, column=3, padx=8)
 
+        NewNoteEditButton = CTkButton(NewNoteFrame,
+                                        text="",
+                                        image=resized_edit_icon,
+                                        command=lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c),
+                                        fg_color="#59c8ff",
+                                        hover_color="#129fe5",
+                                        text_color="#00194e",
+                                        bg_color="#3f3f3f",
+                                        border_width=0,
+                                        corner_radius=150,
+                                        height=10,
+                                        width=10)
+        NewNoteEditButton.grid(row=2, column=1, padx=8)
+
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
         ContentEntry.destroy()
@@ -242,6 +272,7 @@ def save_new_note1():
         ActionBackgrounds.append(ActionsBackground)
         SeparateDeleteButtons.append(NewNoteDeleteButton)
         SeparateRenameButtons.append(NewNoteRenameButton)
+        SeparateEditButtons.append(NewNoteEditButton)
 
 
 def open_creating_settings():
@@ -283,6 +314,8 @@ def switch_appearance_mode():
             NewNoteDeleteButton.configure(bg_color="#c5c5c5")
         for NewNoteRenameButton in SeparateRenameButtons:
             NewNoteRenameButton.configure(bg_color="#c5c5c5")
+        for NewNoteEditButton in SeparateEditButtons:
+            NewNoteEditButton.configure(bg_color="#c5c5c5")
 
     elif Current_mode == "on":
         set_appearance_mode("dark")
@@ -294,21 +327,33 @@ def switch_appearance_mode():
             NewNoteDeleteButton.configure(bg_color="#3f3f3f")
         for NewNoteRenameButton in SeparateRenameButtons:
             NewNoteRenameButton.configure(bg_color="#3f3f3f")
+        for NewNoteEditButton in SeparateEditButtons:
+            NewNoteEditButton.configure(bg_color="#3f3f3f")
 
-def delete_note(NewNoteFrame, NewNoteTitle):
+def delete_note(NewNoteFrame, file_name):
     NewNoteFrame.destroy()
-    note_name = NewNoteTitle.cget("text")
+    note_name = file_name.cget("text")
     file_to_remove = ('Notes\\' + note_name + '.txt')
     os.remove(file_to_remove)
 
 
 def rename_note(file_name):
-    dialog = CTkInputDialog(text="Enter a New Name For The File:", title="Rename File")
+    dialog = CTkInputDialog(text="Rename The Note:", title="Rename Note")
     new_name = dialog.get_input()
     dialog.destroy()
     if new_name:
         os.rename((notespath + file_name.cget("text") + ".txt"), (notespath + new_name + ".txt"))
         file_name.configure(text=new_name)
+
+def edit_note(file_name, file_content):
+    dialog = CTkInputDialog(text="Edit The Note:", title="Edit Note")
+    new_content = dialog.get_input()
+    dialog.destroy()
+    if new_content:
+        with open((notespath + file_name.cget("text") + ".txt"), "w") as f:
+            f.write(new_content)
+        file_content.configure(text=new_content)
+
 
 load_icons()
 load()
