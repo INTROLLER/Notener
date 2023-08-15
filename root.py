@@ -1,4 +1,4 @@
-#Notener 1.9
+#Notener 1.9.5
 
 from customtkinter import *
 import os
@@ -16,8 +16,9 @@ window.resizable(False,False)
 
 notespath = 'Notes\\'
 
-window.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1, minsize=20)
-window.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1, minsize=20)
+window.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7, 8, 9), weight=1, minsize=45)
+window.grid_rowconfigure((0, 9), weight=1, minsize=25)
+window.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9), weight=1, minsize=70)
 
 # Check whether the specified path exists or not
 DoesExist = os.path.exists(notespath)
@@ -36,6 +37,7 @@ SeparateElements = []
 notes_title_data = []
 notes_content_data = []
 
+SearchEntry = CTkEntry(window, width=195, height=36, placeholder_text="Search...")
 
 # Iterate over all files in the folder
 for filename in os.listdir(notespath):
@@ -57,7 +59,7 @@ for filename, content in file_data.items():
     print()
 
 def load_icons():
-    icon_names = ["delete icon", "create icon", "save icon", "rename icon", "edit icon", "cancel icon"]
+    icon_names = ["delete icon", "create icon", "save icon", "rename icon", "edit icon", "cancel icon", "search icon"]
     global resized_icons
     resized_icons = {}
 
@@ -74,15 +76,20 @@ def load():
     global WidgetFrame
 
     WidgetFrame = CTkScrollableFrame(window, fg_color="transparent", width=413, height=400)
-    WidgetFrame.grid(row=2, column=7, rowspan=8, columnspan=7, pady=5)
+    WidgetFrame.grid(row=1, column=4, rowspan=9, columnspan=7)
 
     buttons = ["NewNoteDeleteButton", "NewNoteEditButton"]
     labels = ["NewNoteDescription", "NewNoteTitle"]
+
+    search_query = SearchEntry.get().lower()
 
     for file_name_without_extension, content in file_data.items():
         
         NewTitle = file_name_without_extension
         NewDescription = content
+
+        if search_query and search_query not in NewTitle.lower():
+            continue
 
         NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
         NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
@@ -281,7 +288,7 @@ def save_new_note1():
         widgets.append(NewNoteFrame)
         SeparateElements.extend([ActionsBackground])
 
-        sort_notes()
+        sort_notes(SortingDropdown.get())
 
 
 def open_creating_settings():
@@ -409,6 +416,111 @@ def sort_notes(choice):
         for index, (title, frame) in enumerate(sorted_notes_data):
             frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
+def search_notes():
+    global amount_of_notes
+    search_query = SearchEntry.get().lower()
+    buttons = ["NewNoteDeleteButton", "NewNoteEditButton"]
+    labels = ["NewNoteDescription", "NewNoteTitle"]
+
+    remove()
+    widgets.clear()
+    [list.clear() for list in (widgets, SeparateElements, notes_content_data, notes_title_data)]
+    amount_of_notes = 0
+
+    for file_name_without_extension, content in file_data.items():
+        NewTitle = file_name_without_extension
+        NewDescription = content
+
+        if search_query and search_query not in NewTitle.lower():
+            continue
+        
+        NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
+        NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
+
+        NewNoteFrame.grid_rowconfigure((0, 1, 2), weight=1, minsize=50)
+        NewNoteFrame.grid_columnconfigure((0, 1, 2, 3, 4), weight=1, minsize=82)
+
+        amount_of_notes += 1
+
+        for label in labels:
+            if label == "NewNoteTitle":
+                text_=NewTitle
+                font_=("Outfit", 21, "bold")
+                text_color_="#e1ff5c"
+                row_=0
+                column_=0
+                pady_=3
+                columnspan_=5
+                NewNoteTitle = label
+
+            elif label == "NewNoteDescription":
+                text_=NewDescription
+                font_=("Outfit", 15, "bold")
+                text_color_=None
+                row_=1
+                column_=0
+                pady_=3
+                columnspan_=5
+                NewNoteDescription=label
+
+            label1 = CTkLabel(NewNoteFrame,
+                                        text=text_,
+                                        font=font_,
+                                        text_color=text_color_,
+                                        wraplength=400,
+                                        justify="center")
+            label1.grid(row=row_, column=column_, pady=pady_, columnspan=columnspan_)
+
+            if label == "NewNoteTitle":
+                titles.append(label1)
+                NewNoteTitle = label1
+            else:
+                NewNoteDescription = label1
+
+        ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20)
+        ActionsBackground.grid(row=2, column=0, columnspan=5, sticky="nesw")
+
+        for button in buttons:
+            if button == "NewNoteDeleteButton":
+                image_= resized_icons["delete icon"]
+                command_ = lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t)
+                fg_color_= "#ff3c3c"
+                hover_color_= "#ec1a1a"
+                row_ = 2
+                column_ = 3
+                padx_ = 8
+            
+            elif button == "NewNoteEditButton":
+                image_= resized_icons["edit icon"]
+                command_ = lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c)
+                fg_color_= "#59c8ff"
+                hover_color_= "#129fe5"
+                row_ = 2
+                column_ = 1
+                padx_ = 8
+                
+            button = CTkButton(NewNoteFrame,
+                                text="",
+                                image=image_,
+                                command=command_,
+                                fg_color=fg_color_,
+                                hover_color=hover_color_,
+                                text_color="#00194e",
+                                bg_color="#3f3f3f",
+                                border_width=0,
+                                corner_radius=150,
+                                height=10,
+                                width=10)
+            button.grid(row=row_, column=column_, padx=padx_)
+
+            notes_title_data.append((NewTitle, NewNoteFrame))
+            notes_content_data.append((NewDescription, NewNoteFrame))
+
+            SeparateElements.extend([button])
+        widgets.append(NewNoteFrame)
+        SeparateElements.extend([ActionsBackground])
+    sort_notes(SortingDropdown.get())
+
 load_icons()
 load()
 
@@ -426,7 +538,7 @@ SortingDropdown = CTkOptionMenu(window,
                                 button_hover_color="#00a6ff",
                                 dropdown_fg_color="#40d0ff",
                                 dropdown_text_color="#000000",
-                                font=("Outfit", 15, "bold"),
+                                font=("Outfit", 11, "bold"),
                                 dropdown_font=("Outfit", 14, "bold"),
                                 text_color="#000000" ,
                                 dropdown_hover_color="#00a6ff",
@@ -435,7 +547,11 @@ SortingDropdown = CTkOptionMenu(window,
                                 values=["Alphabetical A-Z", "Alphabetical Z-A", "Note length (Asc)", "Note length (Desc)", "Title length (Asc)", "Title length (Desc)"],
                                 command=sort_notes)
 SortingDropdown.configure(width=1)
-SortingDropdown.grid(row=1, column=8, columnspan=2)
+SortingDropdown.grid(row=0, column=8, columnspan=2, pady=7, padx=5)
+
+SearchEntry.grid(row=0, column=4, rowspan=1,columnspan=3, pady=7, padx=5)
+SearchButton = CTkButton(window, text="", image=resized_icons["search icon"], command=search_notes, fg_color="#d6d6d6", hover_color="#9b9b9b", text_color="#000000", font=("Outfit", 15, "bold"))
+SearchButton.grid(row=0, column=7, rowspan=1,columnspan=1, pady=7, padx=5)
 
 #place entities
 CreateNoteButton.place(relx=0.18, rely=0.45, relwidth=0.3, relheight=0.08, anchor="center")
