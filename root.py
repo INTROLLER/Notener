@@ -279,6 +279,11 @@ def save_new_note1():
 
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
+
+        with open(notespath + f'{NewTitle}.txt', 'r') as file:
+            file_content = file.read()
+            file_data[NewTitle] = file_content
+            
         ContentEntry.destroy()
         TitleEntry.destroy()
         CreateNoteButton.configure(text="Create Note", image=resized_icons["create icon"], command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e")
