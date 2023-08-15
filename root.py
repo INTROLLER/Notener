@@ -1,4 +1,4 @@
-#Notener 1.8.5
+#Notener 1.9
 
 from customtkinter import *
 import os
@@ -12,8 +12,12 @@ window.title("Notener")
 window.geometry("700x450")
 amount_of_notes = 0
 set_appearance_mode("dark")
+window.resizable(False,False)
 
 notespath = 'Notes\\'
+
+window.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1, minsize=20)
+window.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1, minsize=20)
 
 # Check whether the specified path exists or not
 DoesExist = os.path.exists(notespath)
@@ -29,6 +33,8 @@ file_data = {}
 widgets = []
 titles = []
 SeparateElements = []
+notes_title_data = []
+notes_content_data = []
 
 
 # Iterate over all files in the folder
@@ -67,8 +73,8 @@ def load():
     global NewNoteFrame
     global WidgetFrame
 
-    WidgetFrame = CTkScrollableFrame(window, fg_color="transparent")
-    WidgetFrame.place(relx=0.675, rely=0.5, anchor="center", relwidth=0.625, relheight=0.95)
+    WidgetFrame = CTkScrollableFrame(window, fg_color="transparent", width=413, height=400)
+    WidgetFrame.grid(row=2, column=7, rowspan=8, columnspan=7, pady=5)
 
     buttons = ["NewNoteDeleteButton", "NewNoteEditButton"]
     labels = ["NewNoteDescription", "NewNoteTitle"]
@@ -151,10 +157,11 @@ def load():
                                 border_width=0,
                                 corner_radius=150,
                                 height=10,
-                                width=10
-                                )
+                                width=10)
             button.grid(row=row_, column=column_, padx=padx_)
 
+            notes_title_data.append((NewTitle, NewNoteFrame))
+            notes_content_data.append((NewDescription, NewNoteFrame))
             SeparateElements.extend([button])
 
         SeparateElements.extend([ActionsBackground])
@@ -162,6 +169,8 @@ def load():
         widgets.append(NewNoteFrame)
 
         amount_of_notes += 1
+
+        sort_notes("Alphabetical A-Z")
 
 #commands
 def save_new_note1():
@@ -253,9 +262,11 @@ def save_new_note1():
                                 border_width=0,
                                 corner_radius=150,
                                 height=10,
-                                width=10
-                                )
+                                width=10)
             button.grid(row=row_, column=column_, padx=padx_)
+
+            notes_title_data.append((NewTitle, NewNoteFrame))
+            notes_content_data.append((NewDescription, NewNoteFrame))
 
             SeparateElements.extend([button])
 
@@ -269,6 +280,8 @@ def save_new_note1():
 
         widgets.append(NewNoteFrame)
         SeparateElements.extend([ActionsBackground])
+
+        sort_notes()
 
 
 def open_creating_settings():
@@ -359,6 +372,43 @@ def edit_note(file_name, file_content):
     save_button.grid(row=2, column=0)
     cancel_button.grid(row=2, column=1)
 
+def sort_notes(choice):
+    if choice == "Alphabetical A-Z":
+        # Sort the notes_data based on titles and recreate WidgetFrames in sorted order
+        sorted_notes_data = sorted(notes_title_data, key=lambda x: x[0].lower())
+        for index, (title, frame) in enumerate(sorted_notes_data):
+            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
+    elif choice == "Alphabetical Z-A":
+        # Sort the notes_data based on titles and recreate WidgetFrames in sorted order
+        sorted_notes_data = sorted(notes_title_data, key=lambda x: x[0].lower(), reverse=True)
+        for index, (title, frame) in enumerate(sorted_notes_data):
+            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
+    elif choice == "Note length (Asc)":
+        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
+        sorted_notes_data = sorted(notes_content_data, key=lambda x: len(x[0]))
+        for index, (title, frame) in enumerate(sorted_notes_data):
+            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
+    elif choice == "Note length (Desc)":
+        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
+        sorted_notes_data = sorted(notes_content_data, key=lambda x: len(x[0]), reverse=True)
+        for index, (title, frame) in enumerate(sorted_notes_data):
+            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
+    elif choice == "Title length (Asc)":
+        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
+        sorted_notes_data = sorted(notes_title_data, key=lambda x: len(x[0]))
+        for index, (title, frame) in enumerate(sorted_notes_data):
+            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
+    elif choice == "Title length (Desc)":
+        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
+        sorted_notes_data = sorted(notes_title_data, key=lambda x: len(x[0]), reverse=True)
+        for index, (title, frame) in enumerate(sorted_notes_data):
+            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
 load_icons()
 load()
 
@@ -370,6 +420,22 @@ Label2 = CTkLabel(window, text="Press")
 ModeSwitch_var = StringVar(value="on")
 ModeSwitch = CTkSwitch(window, text="Darkmode", command=switch_appearance_mode, variable=ModeSwitch_var, onvalue="on", offvalue="off", corner_radius=100)
 ModeSwitch.place(relx=0.1, rely=0.95, anchor="center")
+SortingDropdown = CTkOptionMenu(window,
+                                fg_color="#40d0ff",
+                                button_color="#40d0ff",
+                                button_hover_color="#00a6ff",
+                                dropdown_fg_color="#40d0ff",
+                                dropdown_text_color="#000000",
+                                font=("Outfit", 15, "bold"),
+                                dropdown_font=("Outfit", 14, "bold"),
+                                text_color="#000000" ,
+                                dropdown_hover_color="#00a6ff",
+                                width=1, height=30,
+                                dynamic_resizing=True,
+                                values=["Alphabetical A-Z", "Alphabetical Z-A", "Note length (Asc)", "Note length (Desc)", "Title length (Asc)", "Title length (Desc)"],
+                                command=sort_notes)
+SortingDropdown.configure(width=1)
+SortingDropdown.grid(row=1, column=8, columnspan=2)
 
 #place entities
 CreateNoteButton.place(relx=0.18, rely=0.45, relwidth=0.3, relheight=0.08, anchor="center")
