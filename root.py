@@ -1,4 +1,4 @@
-#Notener 1.8
+#Notener 1.8.5
 
 from customtkinter import *
 import os
@@ -51,7 +51,7 @@ for filename, content in file_data.items():
     print()
 
 def load_icons():
-    icon_names = ["delete icon", "create icon", "save icon", "rename icon", "edit icon"]
+    icon_names = ["delete icon", "create icon", "save icon", "rename icon", "edit icon", "cancel icon"]
     global resized_icons
     resized_icons = {}
 
@@ -283,7 +283,7 @@ def open_creating_settings():
     ContentEntry = CTkEntry(window,  placeholder_text="Enter desired note content", corner_radius=15)
     ContentEntry.place(relx=0.18, rely=0.45, relwidth=0.3, relheight= 0.08, anchor="center")
 
-    CreateNoteButton.configure(text="Save Note", image=resized_icons["save icon"], command=save_new_note1, fg_color="#1cff5a", hover_color="#00d139", text_color="#031a0d")
+    CreateNoteButton.configure(text="Save Note", image=resized_icons["save icon"], command=save_new_note1, fg_color="#1cff5a", hover_color="#00d139", text_color="#000000")
     CreateNoteButton.place(relx=0.18, rely=0.57)
     DeleteAllButton.place(relx=0.18, rely=0.67)
 
@@ -349,8 +349,8 @@ def edit_note(file_name, file_content):
     rename_entry.insert(0, file_name.cget("text"))
     edit_content_entry = CTkEntry(edit_window, width=315, height=35, placeholder_text="Edit your note content")
     edit_content_entry.insert(0, file_content.cget("text"))
-    save_button = CTkButton(edit_window, text="Save", fg_color="#1cff5a", hover_color="#00d139", text_color="#00194e", font=("Outfit", 20, "bold"), command=save_changes)
-    cancel_button = CTkButton(edit_window, text="Cancel", fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#00194e", font=("Outfit", 20, "bold"), command=destroy_edit_window)
+    save_button = CTkButton(edit_window, text="Save", fg_color="#1cff5a", hover_color="#00d139", text_color="#000000", font=("Outfit", 20, "bold"), command=save_changes, image=resized_icons["save icon"])
+    cancel_button = CTkButton(edit_window, text="Cancel", fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#000000", font=("Outfit", 20, "bold"), command=destroy_edit_window, image=resized_icons["cancel icon"])
 
     edit_window.rowconfigure((0, 1, 2), weight=1, minsize=50)
     edit_window.columnconfigure((0, 1), weight=1, minsize=82)
@@ -363,8 +363,8 @@ load_icons()
 load()
 
 #entitites
-CreateNoteButton = CTkButton(window, text="Create Note", image=resized_icons["create icon"], command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#00194e", font=("Outfit", 20, "bold"), corner_radius=15)
-DeleteAllButton = CTkButton(window, text="Delete All", image=resized_icons["delete icon"], command=delete_all_notes, fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#150505", font=("Outfit", 20, "bold"), corner_radius=15)
+CreateNoteButton = CTkButton(window, text="Create Note", image=resized_icons["create icon"], command=open_creating_settings, fg_color="#40d0ff", hover_color="#00a6ff", text_color="#000000", font=("Outfit", 20, "bold"), corner_radius=15)
+DeleteAllButton = CTkButton(window, text="Delete All", image=resized_icons["delete icon"], command=delete_all_notes, fg_color="#ff3c3c", hover_color="#ec1a1a", text_color="#000000", font=("Outfit", 20, "bold"), corner_radius=15)
 Label1 = CTkLabel(window, text="Press")
 Label2 = CTkLabel(window, text="Press")
 ModeSwitch_var = StringVar(value="on")
