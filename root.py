@@ -1,4 +1,4 @@
-#Notener 1.9.5
+#Notener 2.0
 
 from customtkinter import *
 import os
@@ -26,7 +26,6 @@ if not DoesExist:
    # Create a new directory because it does not exist
    os.makedirs(notespath)
    print("Successfully created missing notes folder!")
-
 
 file_data = {}
 
@@ -74,6 +73,8 @@ def load():
     global amount_of_notes
     global NewNoteFrame
     global WidgetFrame
+    global get_the_button
+    global button2_holder
 
     WidgetFrame = CTkScrollableFrame(window, fg_color="transparent", width=413, height=400)
     WidgetFrame.grid(row=1, column=4, rowspan=9, columnspan=7)
@@ -134,42 +135,40 @@ def load():
         ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20)
         ActionsBackground.grid(row=2, column=0, columnspan=5, sticky="nesw")
 
-        for button in buttons:
-            if button == "NewNoteDeleteButton":
-                image_= resized_icons["delete icon"]
-                command_ = lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t)
-                fg_color_= "#ff3c3c"
-                hover_color_= "#ec1a1a"
-                row_ = 2
-                column_ = 3
-                padx_ = 8
-            
-            elif button == "NewNoteEditButton":
-                image_= resized_icons["edit icon"]
-                command_ = lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c)
-                fg_color_= "#59c8ff"
-                hover_color_= "#129fe5"
-                row_ = 2
-                column_ = 1
-                padx_ = 8
-                
-            button = CTkButton(NewNoteFrame,
-                                text="",
-                                image=image_,
-                                command=command_,
-                                fg_color=fg_color_,
-                                hover_color=hover_color_,
-                                text_color="#00194e",
-                                bg_color="#3f3f3f",
-                                border_width=0,
-                                corner_radius=150,
-                                height=10,
-                                width=10)
-            button.grid(row=row_, column=column_, padx=padx_)
+        NewNoteDeleteButton = CTkButton(NewNoteFrame,
+                            text="",
+                            image=resized_icons["delete icon"],
+                            command = lambda t=NewNoteTitle,f=NewNoteFrame,c=NewNoteDescription, a=ActionsBackground: delete_note(t, f, c, a),
+                            fg_color="#ff3c3c",
+                            hover_color="#ec1a1a",
+                            text_color="#00194e",
+                            bg_color="#3f3f3f",
+                            border_width=0,
+                            corner_radius=150,
+                            height=10,
+                            width=10)
+        NewNoteDeleteButton.grid(row=2, column=3, padx=8)
 
-            notes_title_data.append((NewTitle, NewNoteFrame))
-            notes_content_data.append((NewDescription, NewNoteFrame))
-            SeparateElements.extend([button])
+        NewNoteEditButton = CTkButton(NewNoteFrame,
+                            text="",
+                            image= resized_icons["edit icon"],
+                            command = lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c),
+                            fg_color= "#59c8ff",
+                            hover_color= "#129fe5",
+                            text_color="#00194e",
+                            bg_color="#3f3f3f",
+                            border_width=0,
+                            corner_radius=150,
+                            height=10,
+                            width=10)
+        NewNoteEditButton.grid(row=2, column=1, padx=8)
+
+        NewNoteDeleteButton.configure(command=lambda t=NewNoteTitle,f=NewNoteFrame,c=NewNoteDescription, b1=NewNoteDeleteButton, b2=NewNoteEditButton, a=ActionsBackground: delete_note(t, f, c, b1, b2, a))
+
+        notes_title_data.append((NewTitle, NewNoteFrame))
+        notes_content_data.append((NewDescription, NewNoteFrame))
+
+        SeparateElements.extend([NewNoteDeleteButton, NewNoteEditButton])
 
         SeparateElements.extend([ActionsBackground])
 
@@ -183,8 +182,10 @@ def load():
 def save_new_note1():
     global amount_of_notes
     global NewNoteFrame
+    global get_the_button
+    global button2_holder
+    global NewNoteEditButton
 
-    buttons = ["NewNoteDeleteButton", "NewNoteEditButton"]
     labels = ["NewNoteDescription", "NewNoteTitle"]
 
     NewTitle = TitleEntry.get()
@@ -239,43 +240,40 @@ def save_new_note1():
         ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20)
         ActionsBackground.grid(row=2, column=0, columnspan=5, sticky="nesw")
 
-        for button in buttons:
-            if button == "NewNoteDeleteButton":
-                image_= resized_icons["delete icon"]
-                command_ = lambda t=NewNoteTitle,f=NewNoteFrame: delete_note(f, t)
-                fg_color_= "#ff3c3c"
-                hover_color_= "#ec1a1a"
-                row_ = 2
-                column_ = 3
-                padx_ = 8
-            
-            elif button == "NewNoteEditButton":
-                image_= resized_icons["edit icon"]
-                command_ = lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c)
-                fg_color_= "#59c8ff"
-                hover_color_= "#129fe5"
-                row_ = 2
-                column_ = 1
-                padx_ = 8
-                
-            button = CTkButton(NewNoteFrame,
-                                text="",
-                                image=image_,
-                                command=command_,
-                                fg_color=fg_color_,
-                                hover_color=hover_color_,
-                                text_color="#00194e",
-                                bg_color="#3f3f3f",
-                                border_width=0,
-                                corner_radius=150,
-                                height=10,
-                                width=10)
-            button.grid(row=row_, column=column_, padx=padx_)
+        NewNoteDeleteButton = CTkButton(NewNoteFrame,
+                            text="",
+                            image=resized_icons["delete icon"],
+                            command = lambda t=NewNoteTitle,f=NewNoteFrame,c=NewNoteDescription, a=ActionsBackground: delete_note(t, f, c, a),
+                            fg_color="#ff3c3c",
+                            hover_color="#ec1a1a",
+                            text_color="#00194e",
+                            bg_color="#3f3f3f",
+                            border_width=0,
+                            corner_radius=150,
+                            height=10,
+                            width=10)
+        NewNoteDeleteButton.grid(row=2, column=3, padx=8)
 
-            notes_title_data.append((NewTitle, NewNoteFrame))
-            notes_content_data.append((NewDescription, NewNoteFrame))
+        NewNoteEditButton = CTkButton(NewNoteFrame,
+                            text="",
+                            image= resized_icons["edit icon"],
+                            command = lambda f=NewNoteTitle, c=NewNoteDescription: edit_note(f, c),
+                            fg_color= "#59c8ff",
+                            hover_color= "#129fe5",
+                            text_color="#00194e",
+                            bg_color="#3f3f3f",
+                            border_width=0,
+                            corner_radius=150,
+                            height=10,
+                            width=10)
+        NewNoteEditButton.grid(row=2, column=1, padx=8)
 
-            SeparateElements.extend([button])
+        NewNoteDeleteButton.configure(command=lambda t=NewNoteTitle,f=NewNoteFrame,c=NewNoteDescription, b1=NewNoteDeleteButton, b2=NewNoteEditButton, a=ActionsBackground: delete_note(t, f, c, b1, b2, a))
+
+        notes_title_data.append((NewTitle, NewNoteFrame))
+        notes_content_data.append((NewDescription, NewNoteFrame))
+
+        SeparateElements.extend([NewNoteDeleteButton, NewNoteEditButton])
 
         with open(notespath + f'{NewTitle}.txt', "w") as my_file:
             my_file.write(NewDescription)
@@ -346,12 +344,6 @@ def switch_appearance_mode():
         else:
             key.configure(bg_color=f"{set_background_color}")
 
-def delete_note(NewNoteFrame, file_name):
-    NewNoteFrame.destroy()
-    note_name = file_name.cget("text")
-    file_to_remove = ('Notes\\' + note_name + '.txt')
-    os.remove(file_to_remove)
-
 def edit_note(file_name, file_content):
     def destroy_edit_window():
         edit_window.destroy()
@@ -384,42 +376,47 @@ def edit_note(file_name, file_content):
     save_button.grid(row=2, column=0)
     cancel_button.grid(row=2, column=1)
 
+def delete_note(file_name, NewNoteFrame, file_content, button1, button2, actionsbackground):
+    global amount_of_notes
+    global notes_title_data
+    global notes_content_data
+    global titles
+    global SeparateElements
+
+    NewNoteFrame.destroy()
+    note_name = file_name.cget("text")
+    file_to_remove = ('Notes\\' + note_name + '.txt')
+    os.remove(file_to_remove)
+    amount_of_notes -= 1
+
+    notes_title_data = [(title, frame) for title, frame in notes_title_data if title != file_name.cget("text")]
+    notes_content_data = [(content, frame) for content, frame in notes_content_data if content != file_content.cget("text")]
+    titles = [title for title in titles if title !=file_name]
+    SeparateElements = [button for button in SeparateElements if button != button1]
+    SeparateElements = [button for button in SeparateElements if button != button2]
+    SeparateElements = [frame for frame in SeparateElements if frame != actionsbackground]
+
 def sort_notes(choice):
     if choice == "Alphabetical A-Z":
-        # Sort the notes_data based on titles and recreate WidgetFrames in sorted order
         sorted_notes_data = sorted(notes_title_data, key=lambda x: x[0].lower())
-        for index, (title, frame) in enumerate(sorted_notes_data):
-            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
     elif choice == "Alphabetical Z-A":
-        # Sort the notes_data based on titles and recreate WidgetFrames in sorted order
         sorted_notes_data = sorted(notes_title_data, key=lambda x: x[0].lower(), reverse=True)
-        for index, (title, frame) in enumerate(sorted_notes_data):
-            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
     elif choice == "Note length (Asc)":
-        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
         sorted_notes_data = sorted(notes_content_data, key=lambda x: len(x[0]))
-        for index, (title, frame) in enumerate(sorted_notes_data):
-            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
     elif choice == "Note length (Desc)":
-        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
         sorted_notes_data = sorted(notes_content_data, key=lambda x: len(x[0]), reverse=True)
-        for index, (title, frame) in enumerate(sorted_notes_data):
-            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
     elif choice == "Title length (Asc)":
-        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
         sorted_notes_data = sorted(notes_title_data, key=lambda x: len(x[0]))
-        for index, (title, frame) in enumerate(sorted_notes_data):
-            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
     elif choice == "Title length (Desc)":
-        # Sort the notes_data based on title length and recreate WidgetFrames in sorted order
         sorted_notes_data = sorted(notes_title_data, key=lambda x: len(x[0]), reverse=True)
-        for index, (title, frame) in enumerate(sorted_notes_data):
-            frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
+
+    for index, (title, frame) in enumerate(sorted_notes_data):
+        frame.grid(row=index, column=1, pady=3)  # Re-grid frames in sorted order
 
 def search_notes():
     global amount_of_notes
