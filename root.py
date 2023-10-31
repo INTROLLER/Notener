@@ -1,9 +1,11 @@
-#Notener 2.0
+#Notener 2.2
 
 from customtkinter import *
 import os
 from random import *
 from PIL import Image
+from cryptography.fernet import Fernet
+import bcrypt
 
 
 #the window
@@ -16,9 +18,29 @@ window.resizable(False,False)
 
 notespath = 'Notes\\'
 
-window.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7, 8, 9), weight=1, minsize=45)
-window.grid_rowconfigure((0, 9), weight=1, minsize=25)
-window.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9), weight=1, minsize=70)
+KeyExist = os.path.exists('keyfile.key')
+
+def save_key_to_file(key, filename):
+    with open(filename, 'wb') as key_file:
+        key_file.write(key)
+
+def load_key_from_file(filename):
+    with open(filename, 'rb') as key_file:
+        return key_file.read()
+
+if not KeyExist:
+    encryption_key = Fernet.generate_key()
+    save_key_to_file(encryption_key, 'keyfile.key')
+else:
+    print("")
+# Load the key from the file
+loaded_key = load_key_from_file('keyfile.key')
+
+# Use the loaded key for encryption and decryption
+cipher_suite = Fernet(loaded_key)
+
+window.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), weight=1, minsize=15)
+window.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29), weight=1, minsize=23.33)
 
 # Check whether the specified path exists or not
 DoesExist = os.path.exists(notespath)
@@ -36,7 +58,7 @@ SeparateElements = []
 notes_title_data = []
 notes_content_data = []
 
-SearchEntry = CTkEntry(window, width=195, height=36, placeholder_text="Search...")
+SearchEntry = CTkEntry(window, width=225, height=36, placeholder_text="Search...")
 
 # Iterate over all files in the folder
 for filename in os.listdir(notespath):
@@ -73,26 +95,31 @@ def load():
     global amount_of_notes
     global NewNoteFrame
     global WidgetFrame
-    global get_the_button
-    global button2_holder
+    global WidgetFrame
 
-    WidgetFrame = CTkScrollableFrame(window, fg_color="transparent", width=413, height=400)
-    WidgetFrame.grid(row=1, column=4, rowspan=9, columnspan=7)
+    WidgetFrame = CTkScrollableFrame(window, fg_color="#202020", width=413, height=400)
+    WidgetFrame.grid(row=3, column=10, rowspan=26, columnspan=20)
 
     buttons = ["NewNoteDeleteButton", "NewNoteEditButton"]
     labels = ["NewNoteDescription", "NewNoteTitle"]
 
     search_query = SearchEntry.get().lower()
 
-    for file_name_without_extension, content in file_data.items():
+    for file_name, content in file_data.items():
         
-        NewTitle = file_name_without_extension
+        NewTitle = file_name
         NewDescription = content
 
         if search_query and search_query not in NewTitle.lower():
             continue
 
-        NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410)
+        with open(file_path, 'rb') as file:
+            encrypted_content = file.read()
+            decrypted_content = cipher_suite.decrypt(encrypted_content).decode()
+            file_data[file_name] = decrypted_content
+            NewDescription = decrypted_content
+
+        NewNoteFrame = CTkFrame(WidgetFrame, height=100, width=410, bg_color="transparent")
         NewNoteFrame.grid(row=amount_of_notes, column=1, pady=3)
 
         NewNoteFrame.grid_rowconfigure((0, 1, 2), weight=1, minsize=50)
@@ -132,7 +159,7 @@ def load():
             else:
                 NewNoteDescription = label1
 
-        ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20)
+        ActionsBackground = CTkFrame(NewNoteFrame, fg_color="#3f3f3f", height=20, bg_color="transparent")
         ActionsBackground.grid(row=2, column=0, columnspan=5, sticky="nesw")
 
         NewNoteDeleteButton = CTkButton(NewNoteFrame,
@@ -176,7 +203,7 @@ def load():
 
         amount_of_notes += 1
 
-        sort_notes("Alphabetical A-Z")
+        sort_notes("A-Z Order")
 
 #commands
 def save_new_note1():
@@ -275,8 +302,9 @@ def save_new_note1():
 
         SeparateElements.extend([NewNoteDeleteButton, NewNoteEditButton])
 
-        with open(notespath + f'{NewTitle}.txt', "w") as my_file:
-            my_file.write(NewDescription)
+        encrypted_content = cipher_suite.encrypt(NewDescription.encode())
+        with open(notespath + f'{NewTitle}.txt', "wb") as my_file:
+            my_file.write(encrypted_content)
 
         with open(notespath + f'{NewTitle}.txt', 'r') as file:
             file_content = file.read()
@@ -319,6 +347,11 @@ def delete_all_notes():
     for f in os.listdir(notespath):
         os.remove(os.path.join(notespath, f))
     remove()
+
+    lists = [widgets, titles, SeparateElements, notes_title_data, notes_content_data]
+    for lst in lists:
+        lst.clear()
+
     amount_of_notes = 0
 
 def switch_appearance_mode():
@@ -326,15 +359,28 @@ def switch_appearance_mode():
 
     if Current_mode == "off":
         set_mode = "light"
-        set_background_color = "#c5c5c5"
+        set_background_color = "#a4a4a4"
         set_text_color = "#00716f"
+        set_scrolling_case_color = "#e1e1e1"
+        search_button_fg_color = "#ababab"
+        search_button_hover_color = "#929292"
+        main_frame_fg_color = "#cfcfcf"
 
     elif Current_mode == "on":
         set_mode = "dark"
         set_background_color = "#3f3f3f"
         set_text_color = "#e1ff5c"
+        set_scrolling_case_color = "#202020"
+        search_button_fg_color = "#d6d6d6"
+        search_button_hover_color = "#9b9b9b"
+        main_frame_fg_color = "#2a2a2a"
+
 
     set_appearance_mode(f"{set_mode}")
+
+    for MainNoteFrame in widgets:
+        MainNoteFrame.configure(fg_color=f"{main_frame_fg_color}")
+
     for NewNoteTitle in titles:
         NewNoteTitle.configure(text_color=f"{set_text_color}")
 
@@ -344,14 +390,19 @@ def switch_appearance_mode():
         else:
             key.configure(bg_color=f"{set_background_color}")
 
+    WidgetFrame.configure(fg_color=f"{set_scrolling_case_color}")
+    SearchButton.configure(fg_color=f"{search_button_fg_color}", hover_color=f"{search_button_hover_color}")
+
+
 def edit_note(file_name, file_content):
     def destroy_edit_window():
         edit_window.destroy()
     def save_changes():
         new_name = rename_entry.get()
         new_content = edit_content_entry.get()
-        with open((notespath + file_name.cget("text") + ".txt"), "w") as f:
-            f.write(new_content)
+        encrypted_content = cipher_suite.encrypt(new_content.encode())
+        with open((notespath + file_name.cget("text") + ".txt"), "wb") as f:
+            f.write(encrypted_content)
         os.rename((notespath + file_name.cget("text") + ".txt"), (notespath + new_name + ".txt"))
         file_name.configure(text=new_name)
         file_content.configure(text=new_content)
@@ -361,7 +412,8 @@ def edit_note(file_name, file_content):
     edit_window.title("Edit Note")
     edit_window.geometry("350x150")
     edit_window.attributes('-topmost', 'true')
-
+    edit_window.resizable(False,False)
+    
     rename_entry = CTkEntry(edit_window, width=315, height=35, placeholder_text="Rename your note")
     rename_entry.insert(0, file_name.cget("text"))
     edit_content_entry = CTkEntry(edit_window, width=315, height=35, placeholder_text="Edit your note content")
@@ -382,6 +434,7 @@ def delete_note(file_name, NewNoteFrame, file_content, button1, button2, actions
     global notes_content_data
     global titles
     global SeparateElements
+    global widgets
 
     NewNoteFrame.destroy()
     note_name = file_name.cget("text")
@@ -395,24 +448,25 @@ def delete_note(file_name, NewNoteFrame, file_content, button1, button2, actions
     SeparateElements = [button for button in SeparateElements if button != button1]
     SeparateElements = [button for button in SeparateElements if button != button2]
     SeparateElements = [frame for frame in SeparateElements if frame != actionsbackground]
+    widgets = [frame for frame in widgets if frame != NewNoteFrame]
 
 def sort_notes(choice):
-    if choice == "Alphabetical A-Z":
+    if choice == "A-Z Order":
         sorted_notes_data = sorted(notes_title_data, key=lambda x: x[0].lower())
 
-    elif choice == "Alphabetical Z-A":
+    elif choice == "Z-A Order":
         sorted_notes_data = sorted(notes_title_data, key=lambda x: x[0].lower(), reverse=True)
 
-    elif choice == "Note length (Asc)":
+    elif choice == "Note Length ↑":
         sorted_notes_data = sorted(notes_content_data, key=lambda x: len(x[0]))
 
-    elif choice == "Note length (Desc)":
+    elif choice == "Note Length ↓":
         sorted_notes_data = sorted(notes_content_data, key=lambda x: len(x[0]), reverse=True)
 
-    elif choice == "Title length (Asc)":
+    elif choice == "Title Length ↑":
         sorted_notes_data = sorted(notes_title_data, key=lambda x: len(x[0]))
 
-    elif choice == "Title length (Desc)":
+    elif choice == "Title Length ↓":
         sorted_notes_data = sorted(notes_title_data, key=lambda x: len(x[0]), reverse=True)
 
     for index, (title, frame) in enumerate(sorted_notes_data):
@@ -541,20 +595,20 @@ SortingDropdown = CTkOptionMenu(window,
                                 button_hover_color="#00a6ff",
                                 dropdown_fg_color="#40d0ff",
                                 dropdown_text_color="#000000",
-                                font=("Outfit", 11, "bold"),
+                                font=("Outfit", 16, "bold"),
                                 dropdown_font=("Outfit", 14, "bold"),
                                 text_color="#000000" ,
                                 dropdown_hover_color="#00a6ff",
                                 width=1, height=30,
                                 dynamic_resizing=True,
-                                values=["Alphabetical A-Z", "Alphabetical Z-A", "Note length (Asc)", "Note length (Desc)", "Title length (Asc)", "Title length (Desc)"],
+                                values=["A-Z Order", "Z-A Order", "Note Length ↑", "Note Length ↓", "Title Length ↑", "Title Length ↓"],
                                 command=sort_notes)
 SortingDropdown.configure(width=1)
-SortingDropdown.grid(row=0, column=8, columnspan=2, pady=7, padx=5)
+SortingDropdown.grid(row=0, column=23, rowspan=3, columnspan=7, pady=7, padx=5)
 
-SearchEntry.grid(row=0, column=4, rowspan=1,columnspan=3, pady=7, padx=5)
+SearchEntry.grid(row=0, column=8, rowspan=3, columnspan=15, pady=7, padx=5)
 SearchButton = CTkButton(window, text="", image=resized_icons["search icon"], command=search_notes, fg_color="#d6d6d6", hover_color="#9b9b9b", text_color="#000000", font=("Outfit", 15, "bold"))
-SearchButton.grid(row=0, column=7, rowspan=1,columnspan=1, pady=7, padx=5)
+SearchButton.grid(row=0, column=21, rowspan=3, columnspan=2, pady=7, padx=5)
 
 #place entities
 CreateNoteButton.place(relx=0.18, rely=0.45, relwidth=0.3, relheight=0.08, anchor="center")
